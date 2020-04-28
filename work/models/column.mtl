@@ -1,0 +1,11 @@
+# Exported from Wings 3D 2.2.5
+newmtl material_0
+Ns 19.999999999999996
+d 1.0
+illum 2
+Kd 0.74902 0.74902 0.74902
+Ka 0.0 0.0 0.0
+Ks 0.74902 0.74902 0.74902
+Ke 0.0 0.0 0.0
+map_Kd marble_diffuse.jpg
+
