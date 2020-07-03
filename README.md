@@ -10,7 +10,7 @@ docker run hello-world
 
 ```shell
 docker build --rm -f Dockerfile -t mytensorflow .
-docker run --name=MyTensorFlow -p 8888:8888 -v ~/Jupyter/work:/home/jovyan/work -e USER=$USER  -e USERID=$UID  mytensorflow:latest 
+docker run --rm --name=MyTensorFlow -p 8888:8888 -v ~/Jupyter/work:/home/jovyan/work -e USER=$USER  -e USERID=$UID  mytensorflow:latest 
 ```
 
 ```shell
