@@ -7,6 +7,10 @@ USER root
 
 RUN \
     apt-get update && apt-get install -y \
+        build-essential \
+        pkg-config \
+        python3 \
+        cython3 \
         libcairo2-dev && \
     apt-get upgrade -y && \
     apt-get autoremove && \
@@ -22,5 +26,11 @@ RUN \
     pip install --quiet 'igraph' && \
     pip install --quiet 'scikit-learn' && \
     pip install --quiet 'tensorflow-datasets' && \
+    pip install --quiet 'pyyaml' && \
+    pip install --quiet 'pyaml' && \
+    pip install --quiet 'ruamel.yaml' && \
+    pip install --quiet 'schema' && \
+    pip install --quiet 'tinydb' && \
+    pip install --quiet 'invoke' && \
     fix-permissions $CONDA_DIR && \
     fix-permissions /home/$NB_USER
