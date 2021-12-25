@@ -31,6 +31,8 @@ RUN \
     pip install --quiet 'ruamel.yaml' && \
     pip install --quiet 'schema' && \
     pip install --quiet 'tinydb' && \
+    pip install --quiet 'colorama' && \
+    pip install --quiet 'coloredlogs' && \
     pip install --quiet 'invoke' && \
     pip install --quiet 'sh' && \
     fix-permissions $CONDA_DIR && \
