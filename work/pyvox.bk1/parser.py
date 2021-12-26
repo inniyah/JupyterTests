@@ -29,10 +29,10 @@ class Chunk(object):
             self.voxels = []
             self.voxels = [ Voxel(*unpack('BBBB', content, 4+4*i)) for i in range(n) ]
         elif id == b'RGBA':
-            self.palette = [ Color(0,0,0,0) ] + [ Color(*unpack('BBBB', content, 4*i)) for i in range(255) ]
+            self.palette = [ Color(*unpack('BBBB', content, 4*i)) for i in range(256) ]
             # Docs say:  color [0-254] are mapped to palette index [1-255]
             # hmm
-            # self.palette = [ Color(0,0,0,0) ] + [ Color(*unpack('BBBB', content, 4*i)) for i in range(255) ]
+            # self.palette = [ Color(0,0,0,0) ] + [ Color(*unpack('BBBB', content, 4*i)) for i in range(256) ]
         elif id == b'MATT':
             _id, _type, weight, flags = unpack('iifi', content)
             props = {}
@@ -52,13 +52,17 @@ class Chunk(object):
             self.material = Material(_id, _type, weight, props)
 
         else:
-            raise ParsingException('Unknown chunk type: %s'%self.id)
+            log.warning('Unknown chunk type: %s' % self.id)
+            #raise ParsingException('Unknown chunk type: %s' % self.id)
 
 class VoxParser(object):
 
-    def __init__(self, filename):
-        with open(filename, 'rb') as f:
-            self.content = f.read()
+    def __init__(self, filename=None, bytes=None):
+        if not bytes is None:
+            self.content = bytes
+        else:
+            with open(filename, 'rb') as f:
+                self.content = f.read()
 
         self.offset = 0
 
@@ -83,12 +87,11 @@ class VoxParser(object):
         return Chunk(_id, content, chunks)
 
     def parse(self):
-
             header, version = self.unpack('4si')
 
             if header != b'VOX ': raise ParsingException("This doesn't look like a vox file to me")
 
-            if version != 150: raise ParsingException("Unknown vox version: %s expected 150"%version)
+            if version != 150: raise ParsingException("Unknown vox version: %s expected 150" % version)
 
             main = self._parseChunk()
 
@@ -113,16 +116,11 @@ class VoxParser(object):
 
             return Vox(models, palette, materials)
 
-
-
     def _parseModel(self, size, xyzi):
         if size.id != b'SIZE': raise ParsingException('Expected SIZE chunk, got %s', size.id)
         if xyzi.id != b'XYZI': raise ParsingException('Expected XYZI chunk, got %s', xyzi.id)
 
         return Model(size.size, xyzi.voxels)
-
-
-
 
 if __name__ == '__main__':
 
@@ -130,6 +128,5 @@ if __name__ == '__main__':
     import coloredlogs
 
     coloredlogs.install(level=logging.DEBUG)
-
 
     VoxParser(sys.argv[1]).parse()
