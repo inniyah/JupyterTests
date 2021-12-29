@@ -1,0 +1,2 @@
+https://github.com/rafael-fuente/Python-Raytracer
+https://www.reddit.com/r/madeinpython/comments/i9hgfb/i_finished_my_python_ray_tracer_capable_of/
