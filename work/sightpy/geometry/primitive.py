@@ -2,7 +2,6 @@ from ..utils.constants import *
 from ..utils.vector3 import vec3
 import numpy as np
 
-
 class Primitive:    
     def __init__(self, center, material, max_ray_depth = 1, shadow = True):
         self.center = center

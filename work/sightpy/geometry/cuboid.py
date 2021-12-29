@@ -39,7 +39,6 @@ class Cuboid(Primitive):
         self.collider_list += [Plane_Collider(assigned_primitive = self, center = center + vec3(0,0, -l), u_axis = vec3(-1.0, 0.0, 0.0), v_axis = vec3(0.0, 1.0, 0.0), w = w, h = h, uv_shift= (3,1))]
 """
 
-
 class Cuboid_Collider(Collider):
     def __init__(self, width, height,length,**kwargs):
         super().__init__(**kwargs)
@@ -65,7 +64,6 @@ class Cuboid_Collider(Collider):
 
         self.basis_matrix = self.inverse_basis_matrix.T
 
-
     def rotate(self,M, center):
         self.ax_w = self.ax_w.matmul(M)
         self.ax_h = self.ax_h.matmul(M)
@@ -84,7 +82,6 @@ class Cuboid_Collider(Collider):
         self.rt_local_basis = self.rt.matmul(self.basis_matrix)
 
     def intersect(self, O, D):
-
 
         O_local_basis = O.matmul(self.basis_matrix)
         D_local_basis = D.matmul(self.basis_matrix)
@@ -137,9 +134,4 @@ class Cuboid_Collider(Collider):
         u = np.select([BOTTOM , TOP,  RIGHT, LEFT , FRONT , BACK],  [((self.ax_w.dot(M_C)/self.width*2 *0.985  + 1 ) /2  + 1),   ((self.ax_w.dot(M_C)/self.width*2 *0.985  + 1 ) /2  + 1),   ((self.ax_l.dot(M_C)/self.width*2 *0.985  + 1 ) /2  + 2),    (((self.ax_l*-1).dot(M_C)/self.width*2 *0.985  + 1 ) /2  + 0),    (((self.ax_w*-1).dot(M_C)/self.width*2 *0.985  + 1 ) /2  + 3),     (( self.ax_w.dot(M_C)/self.width*2 *0.985  + 1 ) /2  + 1)])
         v = np.select([BOTTOM , TOP,  RIGHT, LEFT , FRONT , BACK],  [(((self.ax_l*-1).dot(M_C)/self.width*2 *0.985  + 1 ) /2  + 0),   ((self.ax_l.dot(M_C)/self.width*2 *0.985  + 1 ) /2  + 2),   ((self.ax_h.dot(M_C)/self.width*2 *0.985  + 1 ) /2  + 1),    (((self.ax_h).dot(M_C)/self.width*2 *0.985  + 1 ) /2  + 1),    (((self.ax_h).dot(M_C)/self.width*2 *0.985  + 1 ) /2  + 1),     (( self.ax_h.dot(M_C)/self.width*2 *0.985  + 1 ) /2  + 1)])
         return u,v
-
-
-
-
-
 

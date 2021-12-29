@@ -12,13 +12,11 @@ class Sphere(Primitive):
     def get_uv(self, hit):
         return hit.collider.get_uv(hit)
 
-        
 class Sphere_Collider(Collider):
     def __init__(self,  radius, **kwargs):
         super().__init__(**kwargs)
         self.radius = radius
-        
-        
+
     def intersect(self, O, D):
         
         b = 2 * D.dot(O - self.center)

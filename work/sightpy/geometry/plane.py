@@ -3,7 +3,6 @@ from ..utils.constants import *
 from ..utils.vector3 import vec3
 from ..geometry import Primitive, Collider
 
-
 class Plane(Primitive): 
     def __init__(self,center,  material, width,height, u_axis, v_axis, max_ray_depth = 5, shadow = True):
         super().__init__(center,  material, max_ray_depth,shadow = shadow)  
@@ -14,7 +13,6 @@ class Plane(Primitive):
 
     def get_uv(self, hit):
         return hit.collider.get_uv(hit)
-
 
 class Plane_Collider(Collider):
     def __init__(self, u_axis, v_axis, w, h, uv_shift = (0.,0.),**kwargs):
@@ -31,9 +29,6 @@ class Plane_Collider(Collider):
                                                [self.u_axis.y,       self.v_axis.y,         self.normal.y],
                                                [self.u_axis.z,       self.v_axis.z,         self.normal.z]])
         self.basis_matrix = self.inverse_basis_matrix.T
-
-
-
 
     def intersect(self, O, D):
         N = self.normal  
@@ -52,11 +47,9 @@ class Plane_Collider(Collider):
         u = self.u_axis.dot(M_C)
         v = self.v_axis.dot(M_C)
 
-
         hit_inside = (np.abs(u)  <= self.w) & (np.abs(v) <= self.h) & (NdotC_O * NdotD > 0) 
         hit_UPWARDS  = (NdotD < 0)
         hit_UPDOWN  = np.logical_not(hit_UPWARDS)
-
 
         pred1 = hit_inside & hit_UPWARDS
         pred2 = hit_inside & hit_UPDOWN
@@ -74,7 +67,6 @@ class Plane_Collider(Collider):
         u = ((self.u_axis.dot(M_C)/self.w + 1 ) /2 + self.uv_shift[0])
         v = ((self.v_axis.dot(M_C)/self.h + 1 ) /2  + self.uv_shift[1])
         return u,v
-
 
     def get_Normal(self, hit):
         return self.normal

@@ -11,14 +11,13 @@ class Surface:
         self.shadow = shadow
         self.collider_list = [] 
 
-        
     def rotate(self, θ, u):
-        
+
         u = u.normalize()
         θ = θ/180 *np.pi 
         cosθ = np.cos(θ)
         sinθ = np.sqrt(1-cosθ**2) * np.sign(θ)
-        
+
         #rotation matrix along u axis
         M = np.array([
                        [cosθ + u.x*u.x * (1-cosθ),      u.x*u.y*(1-cosθ) - u.z*sinθ,         u.x*u.z*(1-cosθ) +u.y*sinθ],
@@ -27,4 +26,4 @@ class Surface:
                       ])
         for c in self.collider_list:
             c.rotate(M, self.center)
-            
+
