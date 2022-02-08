@@ -37,6 +37,8 @@ RUN \
     pip install --quiet 'colorama' && \
     pip install --quiet 'coloredlogs' && \
     pip install --quiet 'progressbar2' && \
+    pip install --quiet 'PyTMX' && \
+    pip install --quiet 'ulvl' && \
     pip install --quiet 'invoke' && \
     pip install --quiet 'sh' && \
     fix-permissions $CONDA_DIR && \

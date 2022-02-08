@@ -14,6 +14,7 @@ docker run --rm --name=MyTensorFlow -p 8888:8888 -v ~/Jupyter/work:/home/jovyan/
 ```
 
 ```shell
+docker exec -it MyTensorFlow bash
 docker container ls -a
 docker container rm <containername>
 docker system prune
