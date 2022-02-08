@@ -16,8 +16,8 @@ PACKAGES = []
 
 ext_modules=[
 	Extension(
-		"tmxlite",
-		[
+		name = "tmxlite",
+		sources = [
 			"./tmxlite.pyx",
 			"src/LayerGroup.cpp",
 			"src/Object.cpp",
@@ -34,6 +34,8 @@ ext_modules=[
 		],
 		libraries=[],
 		include_dirs=["include"],
+		language='c++',
+		extra_compile_args=[],
 	)
 ]
 
