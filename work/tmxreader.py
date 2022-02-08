@@ -3,7 +3,7 @@
 
 # Copyright (c) 2011, DR0ID
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
 #     * Redistributions of source code must retain the above copyright
@@ -14,7 +14,7 @@
 #     * Neither the name of the <organization> nor the
 #       names of its contributors may be used to endorse or promote products
 #       derived from this software without specific prior written permission.
-# 
+#
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 # ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -34,29 +34,6 @@ It loads the \*.tmx files produced by Tiled.
 
 """
 
-# Versioning scheme based on: http://en.wikipedia.org/wiki/Versioning#Designating_development_stage
-#
-#   +-- api change, probably incompatible with older versions
-#   |     +-- enhancements but no api change
-#   |     |
-# major.minor[.build[.revision]]
-#                |
-#                +-|* 0 for alpha (status)
-#                  |* 1 for beta (status)
-#                  |* 2 for release candidate
-#                  |* 3 for (public) release
-#
-# For instance:
-#     * 1.2.0.1 instead of 1.2-a
-#     * 1.2.1.2 instead of 1.2-b2 (beta with some bug fixes)
-#     * 1.2.2.3 instead of 1.2-rc (release candidate)
-#     * 1.2.3.0 instead of 1.2-r (commercial distribution)
-#     * 1.2.3.5 instead of 1.2-r5 (commercial distribution with many bug fixes)
-
-# __revision__ = "$Rev: 131 $"
-# __version__ = "3.1.0." + __revision__[6:-2]
-# __author__ = 'DR0ID @ 2009-2011'
-
 # import logging
 # #the following few lines are needed to use logging if this module used without
 # # a previous call to logging.basicConfig()
@@ -66,10 +43,13 @@ It loads the \*.tmx files produced by Tiled.
 # _LOGGER = logging.getLogger('tiledtmxloader')
 # if __debug__:
     # _LOGGER.debug('%s loading ...' % (__name__))
+
 #  -----------------------------------------------------------------------------
 
 
 import sys
+import os
+
 from xml.dom import minidom, Node
 try:
     # python 2.x
@@ -78,22 +58,22 @@ try:
 except:
     # python 3.x
     from io import StringIO
-import os.path
+
 import struct
 import array
 
 #  -----------------------------------------------------------------------------
 class TileMap(object):
     """
-    {mapattr: value, 
-        layers: [{layerattr, data: [gid]}, 
+    {mapattr: value,
+        layers: [{layerattr, data: [gid]},
                  {objects: [{objectattr}]}
-                 ], 
+                 ],
         tilesets: [tileset]
         }
-    
-    
-    
+
+
+
     The TileMap holds all the map data.
 
     :Ivariables:
@@ -130,9 +110,8 @@ class TileMap(object):
 
     """
 
-
     def __init__(self):
-#        This is the top container for all data. The gid is the global id 
+#        This is the top container for all data. The gid is the global id
 #       (for a image).
 #        Before calling convert most of the values are strings. Some additional
 #        values are also calculated, see convert() for details. After calling
@@ -203,11 +182,11 @@ class TileMap(object):
             if not layer.is_object_group:
                 self._decode_layer(layer)
                 layer.generate_2D()
-                
+
     def _decode_layer(self, layer):
         """
-        Converts the contents in a list of integers which are the gid of the 
-        used tiles. If necessairy it decodes and uncompresses the contents.
+        Converts the contents in a list of integers which are the gid of the
+        used tiles. If necessary it decodes and uncompresses the contents.
         """
         layer.decoded_content = []
         if layer.encoded_content:
@@ -226,10 +205,10 @@ class TileMap(object):
                     raise Exception('unknown data encoding %s' % \
                                                                 (layer.encoding))
             else:
-                # in the case of xml the encoded_content already contains a 
+                # in the case of xml the encoded_content already contains a
                 # list of integers
                 self._fill_decoded_content(layer, list(map(int, layer.encoded_content)))
-                
+
                 content = ""
             if layer.compression:
                 if layer.compression == 'gzip':
@@ -244,17 +223,16 @@ class TileMap(object):
 
         if content:
             struc = struct.Struct("<" + "I" * layer.width * layer.height)
-            val = struc.unpack(content) 
+            val = struc.unpack(content)
             self._fill_decoded_content(layer, val)
 
     def _fill_decoded_content(self, layer, gid_list):
-        layer.decoded_content = array.array('I')
+        layer.decoded_content = array.array('L')
         layer.decoded_content.extend(gid_list)# make Cell
-    
+
         # TODO: generate property grid here??
-        
-        
-                
+
+
 #  -----------------------------------------------------------------------------
 
 
@@ -316,7 +294,7 @@ class TileImage(object):
         encoding : string
             encoding of the content
         trans : tuple of (r,g,b)
-            the colorkey color, raw as hex, after calling convert just a 
+            the colorkey color, raw as hex, after calling convert just a
             (r,g,b) tuple
         properties : dict
             the propertis set in the editor, name-value pairs
@@ -452,7 +430,7 @@ class TileLayer(object):
 
     # def decode(self):
         # """
-        # Converts the contents in a list of integers which are the gid of the 
+        # Converts the contents in a list of integers which are the gid of the
         # used tiles. If necessairy it decodes and uncompresses the contents.
         # """
         # self.decoded_content = []
@@ -472,7 +450,7 @@ class TileLayer(object):
                     # raise Exception('unknown data encoding %s' % \
                                                                 # (self.encoding))
             # else:
-                # # in the case of xml the encoded_content already contains a 
+                # # in the case of xml the encoded_content already contains a
                 # # list of integers
                 # self.decoded_content = list(map(int, self.encoded_content))
                 # content = ""
@@ -493,15 +471,15 @@ class TileLayer(object):
         # # for idx in range(0, len(content), 4 * self.width):
             # # val = struc_unpack_from(content, idx)
             # # self_decoded_content_extend(val)
-# ####            
+# ####
         # struc = struct.Struct("<" + "I" * self.width * self.height)
         # val = struc.unpack(content) # make Cell
         # # self.decoded_content.extend(val)
-        
-        
+
+
         # self.decoded_content = array.array('I')
         # self.decoded_content.extend(val)
-        
+
 
         # # arr = array.array('I')
         # # arr.fromlist(self.decoded_content)
@@ -669,7 +647,7 @@ def decompress_gzip(in_str, string_encoding='latin-1'):
     :returns: uncompressed string
     """
     import gzip
-    
+
     if sys.version_info > (2, ):
         from io import BytesIO
         copmressed_stream = BytesIO(in_str)
@@ -737,8 +715,7 @@ class TileMapParser(object):
         if hasattr(tile_set, "source"):
             tile_set = self._parse_tsx(tile_set, world_map)
         else:
-            tile_set = self._get_tile_set(tile_set_node, tile_set, \
-                                                  self.map_file_name, world_map)
+            tile_set = self._get_tile_set(tile_set_node, tile_set, self.map_file_name, world_map)
         world_map.tile_sets.append(tile_set)
 
     def _parse_tsx(self, tile_set, world_map):
@@ -828,22 +805,29 @@ class TileMapParser(object):
             else:
                 layer.encoded_content = []
                 for child in node.childNodes:
-                    if child.nodeType == Node.ELEMENT_NODE and \
-                                                    child.nodeName == "tile":
+                    if child.nodeType == Node.ELEMENT_NODE and child.nodeName == "tile":
                         val = child.attributes["gid"].nodeValue
                         #print child, val
                         layer.encoded_content.append(val)
         world_map.layers.append(layer)
 
+    def _build_group(self, group_node, world_map):
+        for node in self._get_nodes(group_node.childNodes, 'layer'):
+            self._build_layer(node, world_map)
+        for node in self._get_nodes(group_node.childNodes, 'group'):
+            self._build_group(node, world_map)
+
     def _build_world_map(self, world_node):
         world_map = TileMap()
         self._set_attributes(world_node, world_map)
-        if world_map.version not in ["1.0", "1.1", "1.2"]:
+        if world_map.version not in ["1.0", "1.1", "1.2", "1.3", "1.4", "1.5"]:
             raise VersionError('this parser was made for maps of version 1.0, found version %s' % world_map.version)
         for node in self._get_nodes(world_node.childNodes, 'tileset'):
             self._build_tile_set(node, world_map)
         for node in self._get_nodes(world_node.childNodes, 'layer'):
             self._build_layer(node, world_map)
+        for node in self._get_nodes(world_node.childNodes, 'group'):
+            self._build_group(node, world_map)
         for node in self._get_nodes(world_node.childNodes, 'objectgroup'):
             self._build_object_groups(node, world_map)
         return world_map
@@ -938,7 +922,7 @@ class AbstractResourceLoader(object):
             filename : string
                 Path to the file to be loaded.
             colorkey : tuple
-                The (r, g, b) color that should be used as colorkey 
+                The (r, g, b) color that should be used as colorkey
                 (or magic color).
                 Default: None
 
@@ -955,7 +939,7 @@ class AbstractResourceLoader(object):
             file_like_obj : file
                 This is the file like object to load the image from.
             colorkey : tuple
-                The (r, g, b) color that should be used as colorkey 
+                The (r, g, b) color that should be used as colorkey
                 (or magic color).
                 Default: None
 
@@ -979,7 +963,7 @@ class AbstractResourceLoader(object):
             tileheight : int
                 The height of a single tile.
             colorkey : tuple
-                The (r, g, b) color that should be used as colorkey 
+                The (r, g, b) color that should be used as colorkey
                 (or magic color).
                 Default: None
 
@@ -1057,3 +1041,203 @@ class AbstractResourceLoader(object):
 
 #  -----------------------------------------------------------------------------
 
+if __name__ == "__main__":
+	import argparse
+	from PIL import Image
+
+	class MapResourceLoader(AbstractResourceLoader):
+		def load(self, tile_map):
+			AbstractResourceLoader.load(self, tile_map)
+
+			for layer in self.world_map.layers:
+				if layer.is_object_group:
+					continue
+
+				for gid in layer.decoded_content:
+					if gid not in self.indexed_tiles:
+						if gid & self.FLIP_X or gid & self.FLIP_Y or gid & self.FLIP_DIAGONAL:
+							image_gid = gid & ~(self.FLIP_X | self.FLIP_Y | self.FLIP_DIAGONAL)
+							offset_x, offset_y, img = self.indexed_tiles[image_gid]
+							tex = img.get_texture()
+							orig_anchor_x = tex.anchor_x
+							orig_anchor_y = tex.anchor_y
+							tex.anchor_x = tex.width / 2
+							tex.anchor_y = tex.height / 2
+							if gid & self.FLIP_DIAGONAL:
+								if gid & self.FLIP_X:
+									tex2 = tex.get_transform(rotate=90)
+								elif gid & self.FLIP_Y:
+									tex2 = tex.get_transform(rotate=270)
+							else:
+								tex2 = tex.get_transform(flip_x=bool(gid & self.FLIP_X), flip_y=bool(gid & self.FLIP_Y))
+							tex2.anchor_x = tex.anchor_x = orig_anchor_x
+							tex2.anchor_y = tex.anchor_y = orig_anchor_y
+							self.indexed_tiles[gid] = (offset_x, offset_y, tex2)
+
+			#json.dump(self.indexed_tiles, sys.stdout, cls=JSONDebugEncoder, indent=2, sort_keys=True)
+
+		def _load_image(self, filename, colorkey=None):
+			img = self._img_cache.get(filename, None)
+			if img is None:
+				print("~ Image: '{}'".format(filename))
+				try:
+					img = Image.open(filename)
+				except FileNotFoundError:
+					img = None
+				self._img_cache[filename] = img
+			return img
+
+		def _load_image_file_like(self, file_like_obj, colorkey=None):
+			return self._load_image(file_like_obj)
+
+		def _load_image_part(self, filename, xpos, ypos, width, height, colorkey=None):
+			#print("~ Image Part: '{}' ({}, {}, {}, {}, {})".format(filename, xpos, ypos, width, height, colorkey))
+			source_img = self._load_image(filename, colorkey)
+			crop_rectangle = (xpos, ypos, xpos + width, ypos + height)
+			return self._load_image(filename).crop(crop_rectangle)
+
+		def _load_image_parts(self, filename, margin, spacing, tile_width, tile_height, colorkey=None):
+			source_img = self._load_image(filename, colorkey)
+			if not source_img is None:
+				width, height = source_img.size
+			else:
+				width = 0
+				height = 0
+			tile_width_spacing = tile_width + spacing
+			width = (width // tile_width_spacing) * tile_width_spacing
+			tile_height_spacing = tile_height + spacing
+			height = (height // tile_height_spacing) * tile_height_spacing
+			images = []
+			for y_pos in range(margin, height, tile_height_spacing):
+				for x_pos in range(margin, width, tile_width_spacing):
+					img_part = self._load_image_part(filename, x_pos, y_pos, tile_width, tile_height, colorkey)
+					images.append(img_part)
+			return images
+
+		def get_indexed_tiles(self):
+			return self.indexed_tiles
+
+		def save_tile_images(self, directory):
+			os.makedirs(directory, exist_ok=True)
+			for id, (offsetx, neg_offsety, img) in self.indexed_tiles.items():
+				print("~ Tile '{}' ({}, {}): {}".format(id, offsetx, neg_offsety, img))
+				sha1sum = hashlib.sha1()
+				output = io.BytesIO()
+				img.save(output, format='PNG')
+				sha1sum.update(output.getvalue())
+				sha1sum = sha1sum.hexdigest()
+				print("~ SHA1: {}".format(sha1sum))
+				filename = os.path.join(directory, "tile_{}.png".format(sha1sum))
+				with open(filename, 'wb') as f:
+					f.write(output.getvalue())
+
+	def extant_file(x):
+		"""
+		'Type' for argparse - checks that file exists but does not open.
+		"""
+		if not os.path.exists(x):
+			# Argparse uses the ArgumentTypeError to give a rejection message like:
+			# error: argument input: x does not exist
+			raise argparse.ArgumentTypeError("{0} does not exist".format(x))
+		return x
+
+	arg_parser = argparse.ArgumentParser()
+	arg_parser.add_argument(dest="file", type=extant_file, help="TMX File", metavar="FILE")
+	args = arg_parser.parse_args()
+
+	map_filename = str(args.file)
+	print("~ Map: '{}'".format(map_filename))
+	map = TileMapParser().parse_decode(map_filename)
+	resources = MapResourceLoader()
+	resources.load(map)
+	print("~ Orientation: '{}'".format(map.orientation))
+	all_sprite_layers = []
+
+	map_tilewidth = map.tilewidth
+	map_tileheight = map.tileheight
+	map_num_tiles_x = map.width
+	map_num_tiles_y = map.height
+
+	print(f"\nTiled Layers ({len(resources.world_map.layers)}):\n")
+
+	for idx, layer in enumerate(resources.world_map.layers):
+			layer_name = layer.name
+			layer_position_x = layer.x
+			layer_position_y = layer.y
+			layer_is_object_group = layer.is_object_group
+			layer_is_visible = layer.visible
+
+			layer_level = int(layer.properties.get('Level', 0))
+
+			if layer.is_object_group:
+				print("Objects Layer '{}' ({}): {}".format(layer.name, 'visible' if layer.visible else 'not visible', layer.properties))
+				#json.dump(layer, sys.stdout, cls=JSONDebugEncoder, indent=2, sort_keys=True)
+				for obj in layer.objects:
+					obj_id = obj.properties.get('Id', None)
+					obj_type = obj.properties.get('Type', None)
+					if obj_type == 'avatar':
+						print("Avatar '{}' ('{}') at x={}, y={}".format(obj_id, obj_type, obj.x, obj.y))
+					else:
+						print("Object '{}' ('{}') at x={}, y={}".format(obj_id, obj_type, obj.x, obj.y))
+			else:
+				layer_is_metadata = layer.properties.get('Metadata', None)
+				layer_is_wall = layer.properties.get('Avatar', None)
+				layer_is_floor = not layer_is_metadata and not layer_is_wall
+
+				if layer_is_metadata:
+					layer_type = 'metadata'
+				elif layer_is_floor:
+					layer_type = 'floor'
+				elif layer_is_wall:
+					layer_type = 'wall'
+				else:
+					layer_type = 'unknown'
+
+				print("Tiled Layer '{}' ({}): {} ({}x{})".format(
+					layer_name,
+					layer_type,
+					layer.properties,
+					layer.width,
+					layer.height
+				))
+				layer_content = layer.decoded_content # array.array(height*width)
+
+				layer_sprites = []
+
+				bottom_margin = 0
+
+				content2D = [None] * map_num_tiles_y
+				for ypos in range(0, map_num_tiles_y):
+					content2D[ypos] = [None] * map_num_tiles_x
+					for xpos in range(0, map_num_tiles_x):
+						#tile = map.tiles.get(k, None)
+						content2D[ypos][xpos] = None
+
+				#sprite_layer = tiledtmxloader.helperspygame.get_layer_at_index(idx, resources)
+				#all_sprite_layers.append(sprite_layer)
+
+		#resources.save_tile_images('tmp')
+
+	print(f"\nTile Sets ({len(map.tile_sets)}):\n")
+
+	for tileset in map.tile_sets:
+		print(f"Tile Set '{tileset.name}': {len(tileset.tiles)} tiles, starting at firstgid = {tileset.firstgid}")
+
+	print(f"\nTiles ({len(map.tiles)}):\n")
+
+	for gid, cell in map.tiles.items():
+		print(f"Tile {gid} (from Tile Set '{cell.tile_set.name}') -> {cell.properties}")
+
+	print(f"\nLayers ({len(map.layers)}):\n")
+
+	for layer in map.layers:
+		print(f"Layer '{layer.name}' ({layer.width}x{layer.height})")
+		contents = layer.decoded_content
+		histogram = {}
+		for gid in contents:
+			try:
+				histogram[gid] += 1
+			except KeyError:
+				histogram[gid] = 1
+		print(f"  - GID Histogram: {', '.join([f'{c} times tile {i}' for i,c in histogram.items()])}")
+		print(f"  - Properties: {layer.properties}")
