@@ -1,7 +1,5 @@
 #!/usr/bin/make -f
 
-PACKAGES= python3-embed
-
 NUMCPUS=$(shell grep -c '^processor' /proc/cpuinfo)
 
 TRGT=
@@ -15,19 +13,24 @@ AR   = $(TRGT)ar rvc
 
 RM= rm --force --verbose
 
-PYTHON= python3
-CYTHON= cython3
+#~ PYTHON= python3
+#~ CYTHON= cython3
+#~ PKGCONFIG= pkg-config
 
-PKGCONFIG= pkg-config
+PYTHON= /opt/conda/bin/python3
+CYTHON= /opt/conda/bin/cython
+PKGCONFIG= PKG_CONFIG_PATH=/opt/conda/lib/pkgconfig/ pkg-config
+
+PACKAGES= python3-embed
 
 ifndef PACKAGES
 PKG_CONFIG_CFLAGS=
 PKG_CONFIG_LDFLAGS=
 PKG_CONFIG_LIBS=
 else
-PKG_CONFIG_CFLAGS=`pkg-config --cflags $(PACKAGES)`
-PKG_CONFIG_LDFLAGS=`pkg-config --libs-only-L $(PACKAGES)`
-PKG_CONFIG_LIBS=`pkg-config --libs-only-l $(PACKAGES)`
+PKG_CONFIG_CFLAGS=`$(PKGCONFIG) --cflags $(PACKAGES)`
+PKG_CONFIG_LDFLAGS=`$(PKGCONFIG) --libs-only-L $(PACKAGES)`
+PKG_CONFIG_LIBS=`$(PKGCONFIG) --libs-only-l $(PACKAGES)`
 endif
 
 CFLAGS= \

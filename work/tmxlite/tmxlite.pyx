@@ -1,3 +1,8 @@
+# cython: profile=False
+# distutils: language = c++
+# cython: embedsignature = True
+# cython: language_level = 3
+
 from libc.stdint cimport int32_t, uint32_t, int16_t, uint16_t, int8_t, uint8_t
 from libc.stdlib cimport calloc, malloc, free
 from libcpp cimport bool

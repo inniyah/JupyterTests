@@ -41,5 +41,6 @@ RUN \
     pip install --quiet 'ulvl' && \
     pip install --quiet 'invoke' && \
     pip install --quiet 'sh' && \
+    pip install --quiet 'Cython' && \
     fix-permissions $CONDA_DIR && \
     fix-permissions /home/$NB_USER
