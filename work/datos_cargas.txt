@@ -1,0 +1,10 @@
+#Nombre	carga	masa
+part1	1	2
+part2	-2	1
+
+		
+part3	-2.4	1.2
+part4	4	1.2
+part5	5	3
+part6	6	3
+
